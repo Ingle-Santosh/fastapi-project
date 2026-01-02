@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      API_KEY: demo-key
+      JWT_SECRET_KEY: secret_key
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    networks:
+      - backend
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    ports:
+      - "9090:9090"
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  grafana-data:
