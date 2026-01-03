@@ -1,7 +1,3 @@
-Here’s a **clean, professional README.md** you can directly use in your repository. I’ve structured it to match **industry-standard open-source ML projects**, which is great for recruiters and reviewers.
-
----
-
 # 🚗 Car Price Prediction API
 
 A **Machine Learning–powered REST API** built using **FastAPI** to predict the selling price of a used car based on its specifications.
