@@ -15,3 +15,5 @@ redis==5.0.4
 
 prometheus-fastapi-instrumentator==6.1.0
 psutil
+argon2-cffi
+pydantic[email]

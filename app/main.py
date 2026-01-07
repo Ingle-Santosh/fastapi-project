@@ -3,8 +3,16 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from app.api import routes_auth, routes_predict, routes_health
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.core.custom_exceptions import register_exception_handler
+from app.core.database import init_db
 
 app = FastAPI(title="Car Price Prediction API")
+
+# Initialize database on startup
+@app.on_event("startup")
+def startup_event():
+    """Create database tables on application startup"""
+    init_db()
+    print("✅ Database initialized - tables created")
 
 #Link Middleware
 app.add_middleware(LoggingMiddleware)

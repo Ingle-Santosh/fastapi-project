@@ -1,8 +1,14 @@
 from datetime import datetime, timezone, timedelta
 from jose import jwt, JWTError, ExpiredSignatureError
 from app.core.config import settings
+#from passlib.context import CryptContext
 from typing import Dict, Optional
+from argon2 import PasswordHasher
 
+
+# Password hashing context
+#pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = PasswordHasher()
 
 def create_token(data: dict, expire_minutes: int=30) -> str:
     """
@@ -39,3 +45,31 @@ def verify_token(token: str) -> Optional[Dict[str, any]]:
         return None
     except JWTError:
         return None
+
+def hash_password(password: str) -> str:
+    """
+    Hash a password using bcrypt
+    
+    Args:
+        password: Plain text password
+        
+    Returns:
+        Hashed password string
+    """
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verify a password against its hash
+    
+    Args:
+        plain_password: Plain text password to verify
+        hashed_password: Hashed password from database
+        
+    Returns:
+        True if password matches, False otherwise
+    """
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        return False
