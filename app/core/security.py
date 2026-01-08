@@ -4,11 +4,11 @@ from app.core.config import settings
 #from passlib.context import CryptContext
 from typing import Dict, Optional
 from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 
-# Password hashing context
-#pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-pwd_context = PasswordHasher()
+# Argon2 password hasher
+ph = PasswordHasher()
 
 def create_token(data: dict, expire_minutes: int=30) -> str:
     """
@@ -45,10 +45,11 @@ def verify_token(token: str) -> Optional[Dict[str, any]]:
         return None
     except JWTError:
         return None
+    
 
 def hash_password(password: str) -> str:
     """
-    Hash a password using bcrypt
+    Hash a password using Argon2
     
     Args:
         password: Plain text password
@@ -56,11 +57,12 @@ def hash_password(password: str) -> str:
     Returns:
         Hashed password string
     """
-    return pwd_context.hash(password)
+    return ph.hash(password)
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    Verify a password against its hash
+    Verify a password against its Argon2 hash
     
     Args:
         plain_password: Plain text password to verify
@@ -70,6 +72,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         True if password matches, False otherwise
     """
     try:
-        return pwd_context.verify(plain_password, hashed_password)
-    except Exception:
+        ph.verify(hashed_password, plain_password)
+        return True
+    except VerifyMismatchError:
         return False
