@@ -6,7 +6,7 @@ from datetime import datetime
 import psutil
 import os
 
-router = APIRouter(tags=["health"])
+router = APIRouter(tags=["Health"])
 
 
 @router.get("/health", status_code=status.HTTP_200_OK)
